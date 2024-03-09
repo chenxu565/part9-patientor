@@ -20,8 +20,8 @@ const genderSchema = z.nativeEnum(Gender);
 
 const patientSchema = z.object({
   id: z.string(),
-  name: z.string(),
-  occupation: z.string(),
+  name: z.string().min(3).max(50),
+  occupation: z.string().min(3).max(150),
   gender: genderSchema,
   ssn: z.string().optional(),
   dateOfBirth: dateSchema,
@@ -32,6 +32,14 @@ export type Patient = z.infer<typeof patientSchema>;
 const patientFormValuesSchema = patientSchema.omit({ id: true, entries: true });
 
 export type PatientFormValues = z.infer<typeof patientFormValuesSchema>;
+
+export interface onSubmitInterface{
+  (values: unknown) : void;
+}
+
+export interface onCancelInterface{
+  () : void
+}
 
 export default {
   diagnosisSchema,
