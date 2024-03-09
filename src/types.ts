@@ -1,8 +1,12 @@
 import { z } from "zod";
 
-const genderSchema = z.enum(["male", "female", "other"]);
+export enum Gender {
+  Male = "male",
+  Female = "female",
+  Other = "other"
+}
 
-export type Gender = z.infer<typeof genderSchema>;
+const genderSchema = z.nativeEnum(Gender);
 
 const diagnosisSchema = z.object({
   code: z.string(),
