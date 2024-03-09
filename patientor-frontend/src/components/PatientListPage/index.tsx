@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Box, Table, Button, TableHead, Typography, TableCell, TableRow, TableBody } from '@mui/material';
 import axios from 'axios';
+import { z } from "zod";
+import { fromZodError } from "zod-validation-error";
 
-import { PatientFormValues, Patient } from "../../types";
+import schema, { Patient, PatientFormValues } from "../../types";
 import AddPatientModal from "../AddPatientModal";
 
 import HealthRatingBar from "../HealthRatingBar";
@@ -27,9 +29,23 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
     setError(undefined);
   };
 
-  const submitNewPatient = async (values: PatientFormValues) => {
+  const submitNewPatient = async (values: unknown) => {
+    let newPatient: PatientFormValues;
     try {
-      const patient = await patientService.create(values);
+      newPatient = schema.patientFormValuesSchema.parse(values);
+    } catch (e: unknown) {
+      if (e instanceof z.ZodError) {
+        console.error("Data validation error", e.errors);
+        setError(fromZodError(e).message);
+      } else {
+        console.error("Unknown form validation error", e);
+        setError("Unknown form validation error occurred");
+      }
+      return;
+    }
+
+    try {
+      const patient = await patientService.create(newPatient);
       setPatients(patients.concat(patient));
       setModalOpen(false);
     } catch (e: unknown) {
