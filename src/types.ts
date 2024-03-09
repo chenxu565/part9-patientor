@@ -1,22 +1,26 @@
-export enum Gender {
-  Male = "male",
-  Female = "female",
-  Other = "other",
-}
+import { z } from "zod";
 
-export interface DiagnosisEntry {
-  code: string;
-  name: string;
-  latin?: string;
-}
+const genderSchema = z.enum(["male", "female", "other"]);
 
-interface BaseDetailEntryToPatient {
-  id: string;
-  description: string;
-  date: string;
-  specialist: string;
-  diagnosisCodes?: Array<DiagnosisEntry['code']>;
-}
+export type Gender = z.infer<typeof genderSchema>;
+
+const diagnosisSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  latin: z.string().optional()
+});
+
+export type DiagnosisEntry = z.infer<typeof diagnosisSchema>;
+
+const dateSchema = z.coerce.date();
+
+const baseDetailEntryToPatientSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  date: dateSchema,
+  specialist: z.string(),
+  diagnosisCodes: z.array(z.string()).optional()
+});
 
 export enum HealthCheckRating {
   "Healthy" = 0,
@@ -25,54 +29,74 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 
+const healthCheckRatingSchema = z.nativeEnum(HealthCheckRating);
+
 export enum DetailEntryToPatientType {
   HealthCheck = "HealthCheck",
   Hospital = "Hospital",
   OccupationalHealthcare = "OccupationalHealthcare"
 }
 
-interface HealthCheckEntry extends BaseDetailEntryToPatient {
-  type: DetailEntryToPatientType.HealthCheck;
-  healthCheckRating: HealthCheckRating;
-}
+const detailEntryToPatientTypeSchemma = z.nativeEnum(DetailEntryToPatientType);
 
-interface HospitalEntry extends BaseDetailEntryToPatient {
-  type: DetailEntryToPatientType.Hospital;
-  discharge: {
-    date: string;
-    criteria: string;
-  };
-}
+const healthCheckEntrySchema = baseDetailEntryToPatientSchema.extend({
+  type: z.literal(DetailEntryToPatientType.HealthCheck),
+  healthCheckRating: healthCheckRatingSchema
+});
 
-interface OccupationalHealthcareEntry extends BaseDetailEntryToPatient {
-  type: DetailEntryToPatientType.OccupationalHealthcare;
-  employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
-}
+const hospitalEntrySchema = baseDetailEntryToPatientSchema.extend({
+  type: z.literal(DetailEntryToPatientType.Hospital),
+  discharge: z.object({
+    date: dateSchema,
+    criteria: z.string()
+  })
+});
 
-export type DetailEntryToPatient =
-  | HospitalEntry
-  | OccupationalHealthcareEntry
-  | HealthCheckEntry;
+const occupationalHealthcareEntrySchema = baseDetailEntryToPatientSchema.extend({
+  type: z.literal(DetailEntryToPatientType.OccupationalHealthcare),
+  employerName: z.string(),
+  sickLeave: z.object({
+    startDate: dateSchema,
+    endDate: dateSchema,
+  }).optional()
+});
 
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+const detailEntryToPatientSchema = z.discriminatedUnion("type", [
+  healthCheckEntrySchema,
+  hospitalEntrySchema,
+  occupationalHealthcareEntrySchema
+]);
 
-export type DetailEntryToPatientNoID = UnionOmit<DetailEntryToPatient, 'id'>;
+export type DetailEntryToPatient = z.infer<typeof detailEntryToPatientSchema>;
 
-export interface PatientEntry {
-  id: string;
-  name: string;
-  dateOfBirth: string;
-  ssn: string;
-  gender: Gender;
-  occupation: string;
-  entries: DetailEntryToPatient[];
-}
+export type DetailEntryToPatientNoID = Omit<DetailEntryToPatient, 'id'>;
+
+const patientEntrySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  dateOfBirth: dateSchema,
+  ssn: z.string(),
+  gender: genderSchema,
+  occupation: z.string(),
+  entries: z.array(detailEntryToPatientSchema).default([])
+});
+
+export type PatientEntry = z.infer<typeof patientEntrySchema>;
 
 export type NonSensitivePatientEntry =
   Omit<PatientEntry, 'ssn' | 'entries'>;
 
-export type PatientEntryNoID = Omit<PatientEntry, 'id'>;
+const patientEntryNoIdSchema = patientEntrySchema.omit({id: true});
+
+export type PatientEntryNoID = z.infer<typeof patientEntryNoIdSchema>;
+
+export default {
+  genderSchema,
+  diagnosisSchema,
+  dateSchema,
+  healthCheckRatingSchema,
+  detailEntryToPatientTypeSchemma,
+  detailEntryToPatientSchema,
+  patientEntrySchema,
+  patientEntryNoIdSchema
+};
