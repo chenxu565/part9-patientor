@@ -29,11 +29,14 @@ const patientSchema = z.object({
 
 export type Patient = z.infer<typeof patientSchema>;
 
-export type PatientFormValues = Omit<Patient, "id" | "entries">;
+const patientFormValuesSchema = patientSchema.omit({ id: true, entries: true });
+
+export type PatientFormValues = z.infer<typeof patientFormValuesSchema>;
 
 export default {
   diagnosisSchema,
   dateSchema,
   genderSchema,
-  patientSchema
+  patientSchema,
+  patientFormValuesSchema
 };
