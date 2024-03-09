@@ -12,7 +12,7 @@ const diagnosisSchema = z.object({
 
 export type DiagnosisEntry = z.infer<typeof diagnosisSchema>;
 
-const dateSchema = z.coerce.date();
+const dateSchema = z.coerce.date().transform((date) => date.toISOString().split('T')[0]);
 
 const baseDetailEntryToPatientSchema = z.object({
   id: z.string(),
