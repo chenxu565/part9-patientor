@@ -1,9 +1,23 @@
 import { PatientEntry, DiagnosisEntry } from '../types';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import patientService from '../services/patients';
 import { Male, Female, QuestionMark } from '@mui/icons-material';
 import Box from '@mui/material/Box';
+import { Favorite } from '@mui/icons-material';
+
+import { getColorForRating } from '../utils';
+import patientService from '../services/patients';
+import EntryDetails from './EntryDetails';
+
+interface PropsColoredFavoriteIcon {
+  rating: number;
+}
+
+const ColoredFavoriteIcon = ({rating} : PropsColoredFavoriteIcon) => {
+  return (
+    <Favorite sx={{ color: getColorForRating(rating) }} />
+  );
+};
 
 interface Props {
   diagnoses: DiagnosisEntry[];
@@ -49,8 +63,8 @@ const SinglePatient = ({diagnoses}: Props) => {
       <h3>entries</h3>
       {onePatient.entries.map((entry) => {
         return (
-          <Box key={entry.id} sx={{ border: '2px solid grey', marginBottom: 2, paddingLeft: 2, borderRadius: 2}}>
-            <p>{entry.date} <i>{entry.description}</i></p>
+          <Box key={entry.id} sx={{ border: '2px solid grey', marginBottom: 2, paddingLeft: 1, borderRadius: 2}}>
+            <EntryDetails entry={entry} />
             {entry.diagnosisCodes && 
               <ul>
               {entry.diagnosisCodes.map((code) => {
@@ -61,6 +75,8 @@ const SinglePatient = ({diagnoses}: Props) => {
                 );
               })}
             </ul>}
+            {'healthCheckRating' in entry? <ColoredFavoriteIcon rating={entry.healthCheckRating} /> : null}
+            {'specialist' in entry? <div>diagnose by {entry.specialist}</div>: null}
           </Box>
         );
       })}      
