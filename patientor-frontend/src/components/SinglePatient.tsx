@@ -1,10 +1,14 @@
-import { PatientEntry } from '../types';
+import { PatientEntry, DiagnosisEntry } from '../types';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import patientService from '../services/patients';
 import { Male, Female, QuestionMark } from '@mui/icons-material';
 
-const SinglePatient = () => {
+interface Props {
+  diagnoses: DiagnosisEntry[];
+}
+
+const SinglePatient = ({diagnoses}: Props) => {
   const [onePatient, setOnePatient] = useState<undefined | PatientEntry>(undefined);
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
@@ -31,6 +35,11 @@ const SinglePatient = () => {
     return <div><h2>Loading...</h2></div>;
   }
 
+  const findDiagnosisNameByCode = (code: string) => {
+    const found = diagnoses.find((diagnosis) => diagnosis.code === code);
+    return found ? found.name : 'unknown code';
+  };
+
   return ( onePatient &&
     <div>
       <h2>{onePatient.name} {onePatient.gender === 'male' ? <Male />: onePatient.gender === 'female' ? <Female /> : <QuestionMark/>}</h2>
@@ -44,7 +53,11 @@ const SinglePatient = () => {
             {entry.diagnosisCodes && 
               <ul>
               {entry.diagnosisCodes.map((code) => {
-                return <li key={code}>{code}</li>;
+                return (
+                  <li key={code}>
+                    {code} {findDiagnosisNameByCode(code)}
+                  </li>
+                );
               })}
             </ul>}
           </div>
