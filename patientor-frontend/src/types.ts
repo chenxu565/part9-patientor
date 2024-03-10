@@ -47,6 +47,7 @@ const healthCheckEntrySchema = baseDetailEntryToPatientSchema.extend({
   type: z.literal(DetailEntryToPatientType.HealthCheck),
   healthCheckRating: healthCheckRatingSchema
 });
+export type HealthCheckEntry = z.infer<typeof healthCheckEntrySchema>;
 
 const hospitalEntrySchema = baseDetailEntryToPatientSchema.extend({
   type: z.literal(DetailEntryToPatientType.Hospital),
@@ -55,6 +56,7 @@ const hospitalEntrySchema = baseDetailEntryToPatientSchema.extend({
     criteria: z.string()
   })
 });
+export type HospitalEntry = z.infer<typeof hospitalEntrySchema>;
 
 const occupationalHealthcareEntrySchema = baseDetailEntryToPatientSchema.extend({
   type: z.literal(DetailEntryToPatientType.OccupationalHealthcare),
@@ -64,6 +66,7 @@ const occupationalHealthcareEntrySchema = baseDetailEntryToPatientSchema.extend(
     endDate: dateSchema,
   }).optional()
 });
+export type OccupationalHealthcareEntry = z.infer<typeof occupationalHealthcareEntrySchema>;
 
 const detailEntryToPatientSchema = z.discriminatedUnion("type", [
   healthCheckEntrySchema,
