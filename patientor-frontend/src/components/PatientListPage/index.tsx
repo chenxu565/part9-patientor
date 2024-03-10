@@ -4,7 +4,7 @@ import axios from 'axios';
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
-import schema, { Patient, PatientFormValues } from "../../types";
+import schema, { PatientEntry, PatientFormValues } from "../../types";
 import AddPatientModal from "../AddPatientModal";
 
 import HealthRatingBar from "../HealthRatingBar";
@@ -13,8 +13,8 @@ import patientService from "../../services/patients";
 import { Link } from "react-router-dom";
 
 interface Props {
-  patients : Patient[]
-  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>
+  patients : PatientEntry[]
+  setPatients: React.Dispatch<React.SetStateAction<PatientEntry[]>>
 }
 
 const PatientListPage = ({ patients, setPatients } : Props ) => {
@@ -81,7 +81,7 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.values(patients).map((patient: Patient) => (
+          {Object.values(patients).map((patient: PatientEntry) => (
             <TableRow key={patient.id}>
               <TableCell>
                 <Link to={`/patients/${patient.id}`}>

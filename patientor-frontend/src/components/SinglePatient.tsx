@@ -1,11 +1,11 @@
-import { Patient } from '../types';
+import { PatientEntry } from '../types';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import patientService from '../services/patients';
 import { Male, Female, QuestionMark } from '@mui/icons-material';
 
 const SinglePatient = () => {
-  const [onePatient, setOnePatient] = useState<undefined | Patient>(undefined);
+  const [onePatient, setOnePatient] = useState<undefined | PatientEntry>(undefined);
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
   
