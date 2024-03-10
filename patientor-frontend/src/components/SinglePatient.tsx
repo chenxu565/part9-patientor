@@ -36,6 +36,20 @@ const SinglePatient = () => {
       <h2>{onePatient.name} {onePatient.gender === 'male' ? <Male />: onePatient.gender === 'female' ? <Female /> : <QuestionMark/>}</h2>
       <div>ssn: {onePatient.ssn}</div>
       <div>occupation: {onePatient.occupation}</div>
+      <h3>entries</h3>
+      {onePatient.entries.map((entry) => {
+        return (
+          <div key={entry.id}>
+            <p>{entry.date} <i>{entry.description}</i></p>
+            {entry.diagnosisCodes && 
+              <ul>
+              {entry.diagnosisCodes.map((code) => {
+                return <li key={code}>{code}</li>;
+              })}
+            </ul>}
+          </div>
+        );
+      })}      
     </div>
   );
 };
