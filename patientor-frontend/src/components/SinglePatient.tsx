@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import patientService from '../services/patients';
 import { Male, Female, QuestionMark } from '@mui/icons-material';
+import Box from '@mui/material/Box';
 
 interface Props {
   diagnoses: DiagnosisEntry[];
@@ -48,7 +49,7 @@ const SinglePatient = ({diagnoses}: Props) => {
       <h3>entries</h3>
       {onePatient.entries.map((entry) => {
         return (
-          <div key={entry.id}>
+          <Box key={entry.id} sx={{ border: '2px solid grey', marginBottom: 2, paddingLeft: 2, borderRadius: 2}}>
             <p>{entry.date} <i>{entry.description}</i></p>
             {entry.diagnosisCodes && 
               <ul>
@@ -60,7 +61,7 @@ const SinglePatient = ({diagnoses}: Props) => {
                 );
               })}
             </ul>}
-          </div>
+          </Box>
         );
       })}      
     </div>
