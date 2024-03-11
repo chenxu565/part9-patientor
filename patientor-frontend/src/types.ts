@@ -74,9 +74,15 @@ const detailEntryToPatientSchema = z.discriminatedUnion("type", [
   occupationalHealthcareEntrySchema
 ]);
 
+const detailEntryNoIdToPatientSchema = z.discriminatedUnion("type", [
+  healthCheckEntrySchema.omit({id: true}),
+  hospitalEntrySchema.omit({id: true}),
+  occupationalHealthcareEntrySchema.omit({id: true})
+]);
+
 export type DetailEntryToPatient = z.infer<typeof detailEntryToPatientSchema>;
 
-export type DetailEntryToPatientNoID = Omit<DetailEntryToPatient, 'id'>;
+export type DetailEntryNoIdToPatient = z.infer<typeof detailEntryNoIdToPatientSchema>;
 
 const patientEntrySchema = z.object({
   id: z.string(),
@@ -103,11 +109,16 @@ export interface onCancelInterface{
 }
 
 export default {
+  genderSchema,
   diagnosisSchema,
   dateSchema,
-  genderSchema,
+  healthCheckRatingSchema,
+  detailEntryToPatientTypeSchemma,
+  detailEntryToPatientSchema,
   patientEntrySchema,
   patientFormValuesSchema,
-  detailEntryToPatientSchema,
-  detailEntryToPatientTypeSchemma
+  healthCheckEntrySchema,
+  hospitalEntrySchema,
+  occupationalHealthcareEntrySchema,
+  detailEntryNoIdToPatientSchema
 };
