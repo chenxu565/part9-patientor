@@ -2,7 +2,7 @@ import { PatientEntry, DiagnosisEntry } from '../types';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Male, Female, QuestionMark } from '@mui/icons-material';
-import Box from '@mui/material/Box';
+import { Box, Button } from '@mui/material';
 import { Favorite } from '@mui/icons-material';
 
 import { getColorForRating } from '../utils';
@@ -60,6 +60,8 @@ const SinglePatient = ({diagnoses}: Props) => {
       <h2>{onePatient.name} {onePatient.gender === 'male' ? <Male />: onePatient.gender === 'female' ? <Female /> : <QuestionMark/>}</h2>
       <div>ssn: {onePatient.ssn}</div>
       <div>occupation: {onePatient.occupation}</div>
+      <br/>
+      <Button variant="contained" >Add new entry</Button>
       <h3>entries</h3>
       {onePatient.entries.map((entry) => {
         return (
