@@ -35,4 +35,24 @@ router.get('/:id', (req, res) => {
   }
 });
 
+router.post('/:id/entries', (req, res) => {
+  try {
+    const newEntryNoIdToPatient = schema.detailEntryNoIdToPatientSchema.parse(req.body);
+    const updatedPatient = patientService.addEntryToPatient(newEntryNoIdToPatient, req.params.id);
+    if (updatedPatient) {
+      return res.send(updatedPatient);
+    } else {
+      return res.sendStatus(404).json({ error: 'Patient not found' });
+    }
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).send(fromZodError(error).message);
+    } else if (error instanceof Error) {
+      return res.status(400).send(error.message);
+    } else {
+      return res.status(400).send('Unknown error occurred');
+    }
+  }
+});
+
 export default router;
