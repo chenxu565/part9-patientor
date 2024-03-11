@@ -8,6 +8,7 @@ import { Favorite } from '@mui/icons-material';
 import { getColorForRating } from '../utils';
 import patientService from '../services/patients';
 import EntryDetails from './EntryDetails';
+import AddEntryToPatientModal from './AddEntryToPatientModal';
 
 interface PropsColoredFavoriteIcon {
   rating: number;
@@ -25,24 +26,38 @@ interface Props {
 
 const SinglePatient = ({diagnoses}: Props) => {
   const [onePatient, setOnePatient] = useState<undefined | PatientEntry>(undefined);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
-  
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalError, setModalError] = useState<string>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setModalError(undefined);
+  };
+
+  const submitNewEntryToPatient = async (values: unknown) => {
+    console.log('submitNewPatient', values);
+  };
+
   useEffect(() => {
     if (id) {
       patientService.getOne(id)
         .then(response => {
           setOnePatient(response);
-          setError(null);
+          setLoadingError(null);
         })
         .catch(error => {
           // console.error(error);
-          setError(error.message);
+          setLoadingError(error.message);
         });
     }
   }, [id]);
 
-  if (error) {
+  if (loadingError) {
     return <div><h2>Error loading patient data. Please try again later.</h2></div>;
   }
 
@@ -61,7 +76,13 @@ const SinglePatient = ({diagnoses}: Props) => {
       <div>ssn: {onePatient.ssn}</div>
       <div>occupation: {onePatient.occupation}</div>
       <br/>
-      <Button variant="contained" >Add new entry</Button>
+      <AddEntryToPatientModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntryToPatient}
+        error={modalError}
+      />      
+      <Button variant="contained" onClick={() => openModal()} >Add new entry</Button>
       <h3>entries</h3>
       {onePatient.entries.map((entry) => {
         return (
