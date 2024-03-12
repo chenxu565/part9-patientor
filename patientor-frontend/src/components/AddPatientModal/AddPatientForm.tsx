@@ -59,6 +59,18 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           value={name}
           onChange={({ target }) => setName(target.value)}
         />
+        <FormControl fullWidth style= {{ marginTop: 20 }}>
+          <DatePicker 
+            label="Date of birth" 
+            format="YYYY-MM-DD"
+            value={dateOfBirthDayjs}
+            onChange={(target) => {
+                setDateOfBirthDayjs(dayjs(target));
+                setSsn(dayjs(target).format('DDMMYY-')); // Fill ssn with a default value
+              }
+            }
+          />
+        </FormControl>        
         <TextField
           style= {{ marginTop: 20 }}
           label="Social security number"
@@ -66,14 +78,6 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           value={ssn}
           onChange={({ target }) => setSsn(target.value)}
         />
-        <FormControl fullWidth style= {{ marginTop: 20 }}>
-          <DatePicker 
-            label="Date of birth" 
-            format="YYYY-MM-DD"
-            value={dateOfBirthDayjs}
-            onChange={(target) => setDateOfBirthDayjs(dayjs(target))}
-          />
-        </FormControl>
         <TextField
           style= {{ marginTop: 20 }}
           label="Occupation"
