@@ -41,6 +41,7 @@ const SinglePatient = ({diagnoses}: Props) => {
 
   const submitNewEntryToPatient = async (values: unknown) => {
     console.log('submitNewPatient', values);
+    setModalOpen(false);
   };
 
   useEffect(() => {
@@ -81,6 +82,7 @@ const SinglePatient = ({diagnoses}: Props) => {
         onClose={closeModal}
         onSubmit={submitNewEntryToPatient}
         error={modalError}
+        diagnoses={diagnoses}
       />      
       <Button variant="contained" onClick={() => openModal()} >Add new entry</Button>
       <h3>entries</h3>
