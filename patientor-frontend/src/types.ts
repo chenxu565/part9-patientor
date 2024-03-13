@@ -60,7 +60,7 @@ export type HospitalEntry = z.infer<typeof hospitalEntrySchema>;
 
 const occupationalHealthcareEntrySchema = baseDetailEntryToPatientSchema.extend({
   type: z.literal(DetailEntryToPatientType.OccupationalHealthcare),
-  employerName: z.string(),
+  employerName: z.string().min(3).max(150),
   sickLeave: z.object({
     startDate: dateSchema,
     endDate: dateSchema,

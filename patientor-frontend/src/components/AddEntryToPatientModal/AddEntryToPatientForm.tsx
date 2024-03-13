@@ -1,17 +1,16 @@
 import { useState, SyntheticEvent } from "react";
 
 import {  TextField, MenuItem, Select, Grid, Button, SelectChangeEvent, Box, InputLabel } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from "@mui/material/Checkbox";
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, {Dayjs} from "dayjs";
-
-import { onSubmitInterface, onCancelInterface, DetailEntryToPatientType, DiagnosisEntry } from "../../types";
-
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { onSubmitInterface, onCancelInterface, DetailEntryToPatientType, DiagnosisEntry } from "../../types";
+import FormOccupationalHealthCare from "./FormOccupationalHealthCare";
+
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -40,7 +39,7 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [employerName, setEmployerName] = useState('');
   const [sickLeaveStartDayjs, setSickLeaveStartDayjs] = useState<Dayjs|undefined>();
   const [sickLeaveEndDayjs, setSickLeaveEndDayjs] = useState<Dayjs|undefined>();
-  const [sickLeave, setSickLeave] = useState(false);
+  const [sickLeaveFlag, setSickLeaveFlag] = useState(false);
 
   const diagnosisOptions = diagnoses.map(diagnosis => ({
     value: diagnosis.code,
@@ -60,19 +59,23 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
 
   const addEntryToPatient = (event: SyntheticEvent) => {
     event.preventDefault();
-    // console.log(diagnosisTags);
-    // return 0;
-    onSubmit({
+    const entry = {
       type: entryType,
-      description: description,
-      date: dateDayjs.format('YYYY-MM-DD'),
-      specialist: specialist,
+      description,
+      date: dateDayjs.format("YYYY-MM-DD"),
+      specialist,
       diagnosisCodes: diagnosisTags,
-    });
+      employerName,
+      ...(sickLeaveFlag? {sickLeave:  {
+        startDate: sickLeaveStartDayjs?.format("YYYY-MM-DD"),
+        endDate: sickLeaveEndDayjs?.format("YYYY-MM-DD")
+      }} : {})
+    };
+    onSubmit(entry);
   };
 
-  const handleSickLeaveChange = (_event: SelectChangeEvent<string>) => {
-    setSickLeave(!sickLeave);
+  const handleSickLeaveFlagChange = (_event: SelectChangeEvent<string>) => {
+    setSickLeaveFlag(!sickLeaveFlag);
   };
 
   return (
@@ -143,41 +146,14 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
             onChange={(_event, value) => setDiagnosisTags(value.map(v => v.value))}
           />
           {entryType === DetailEntryToPatientType.OccupationalHealthcare &&
-            <Box>
-            <TextField
-              label="Employer Name"
-              fullWidth
-              value={employerName}
-              onChange={({ target }) => setEmployerName(target.value)}
-            >
-            </TextField>
-          <FormControlLabel 
-            label="Sick Leave"               
-            control={
-              <Checkbox 
-                checked={sickLeave}
-                onChange={handleSickLeaveChange}
-              />
-            }
-          />
-          {sickLeave &&
-            <Box>
-              <DatePicker 
-                label="Sick Leave Start Date" 
-                format="YYYY-MM-DD"
-                value={sickLeaveStartDayjs}
-                onChange={(target) => setSickLeaveStartDayjs(dayjs(target))}
-              />
-              <DatePicker 
-                label="Sick Leave End Date" 
-                format="YYYY-MM-DD"
-                value={sickLeaveEndDayjs}
-                onChange={(target) => setSickLeaveEndDayjs(dayjs(target))}
-              />
-            </Box>
-          }
-
-          </Box>
+            <FormOccupationalHealthCare
+              employerName={employerName}
+              setEmployerName={setEmployerName}
+              sickLeaveFlag={sickLeaveFlag}
+              handleSickLeaveFlagChange={handleSickLeaveFlagChange}
+              setSickLeaveStartDayjs={setSickLeaveStartDayjs}
+              setSickLeaveEndDayjs={setSickLeaveEndDayjs}
+            />
           }
           <Grid 
           >
