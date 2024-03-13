@@ -39,7 +39,7 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [employerName, setEmployerName] = useState('');
   const [sickLeaveStartDayjs, setSickLeaveStartDayjs] = useState<Dayjs|undefined>();
   const [sickLeaveEndDayjs, setSickLeaveEndDayjs] = useState<Dayjs|undefined>();
-  const [sickLeave, setSickLeave] = useState(false);
+  const [sickLeaveFlag, setSickLeaveFlag] = useState(false);
 
   const diagnosisOptions = diagnoses.map(diagnosis => ({
     value: diagnosis.code,
@@ -59,19 +59,23 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
 
   const addEntryToPatient = (event: SyntheticEvent) => {
     event.preventDefault();
-    // console.log(diagnosisTags);
-    // return 0;
-    onSubmit({
+    const entry = {
       type: entryType,
-      description: description,
-      date: dateDayjs.format('YYYY-MM-DD'),
-      specialist: specialist,
+      description,
+      date: dateDayjs.format("YYYY-MM-DD"),
+      specialist,
       diagnosisCodes: diagnosisTags,
-    });
+      employerName,
+      ...(sickLeaveFlag? {sickLeave:  {
+        startDate: sickLeaveStartDayjs?.format("YYYY-MM-DD"),
+        endDate: sickLeaveEndDayjs?.format("YYYY-MM-DD")
+      }} : {})
+    };
+    onSubmit(entry);
   };
 
-  const handleSickLeaveChange = (_event: SelectChangeEvent<string>) => {
-    setSickLeave(!sickLeave);
+  const handleSickLeaveFlagChange = (_event: SelectChangeEvent<string>) => {
+    setSickLeaveFlag(!sickLeaveFlag);
   };
 
   return (
@@ -145,11 +149,9 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
             <FormOccupationalHealthCare
               employerName={employerName}
               setEmployerName={setEmployerName}
-              sickLeave={sickLeave}
-              handleSickLeaveChange={handleSickLeaveChange}
-              sickLeaveStartDayjs={sickLeaveStartDayjs}
+              sickLeaveFlag={sickLeaveFlag}
+              handleSickLeaveFlagChange={handleSickLeaveFlagChange}
               setSickLeaveStartDayjs={setSickLeaveStartDayjs}
-              sickLeaveEndDayjs={sickLeaveEndDayjs}
               setSickLeaveEndDayjs={setSickLeaveEndDayjs}
             />
           }

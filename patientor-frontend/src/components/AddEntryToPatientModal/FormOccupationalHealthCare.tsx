@@ -1,40 +1,41 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Box, TextField, FormControlLabel, Checkbox, SelectChangeEvent} from '@mui/material';
 import dayjs from 'dayjs';
 import { DateRange } from 'react-date-range';
-import { Range } from 'react-date-range';
+import { Range as DateRangeType } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
 interface Props  {
   employerName: string;
   setEmployerName: React.Dispatch<React.SetStateAction<string>>;
-  sickLeave: boolean;
-  handleSickLeaveChange: (event: SelectChangeEvent<string>) => void;
-  sickLeaveStartDayjs: dayjs.Dayjs | undefined;
+  sickLeaveFlag: boolean;
+  handleSickLeaveFlagChange: (event: SelectChangeEvent<string>) => void;
   setSickLeaveStartDayjs: React.Dispatch<React.SetStateAction<dayjs.Dayjs | undefined>>;
-  sickLeaveEndDayjs: dayjs.Dayjs | undefined;
   setSickLeaveEndDayjs: React.Dispatch<React.SetStateAction<dayjs.Dayjs | undefined>>;
 }
 
 const FormOccupationalHealthCare = ({
   employerName,
   setEmployerName,
-  sickLeave,
-  handleSickLeaveChange,
-  sickLeaveStartDayjs,
+  sickLeaveFlag: sickLeave,
+  handleSickLeaveFlagChange: handleSickLeaveChange,
   setSickLeaveStartDayjs,
-  sickLeaveEndDayjs,
   setSickLeaveEndDayjs,
 }: Props) => {
-  const [dateRange, setDateRange] = useState<Range[]>(
-    [{
+  const [dateRange, setDateRange] = useState<DateRangeType>(
+    {
       startDate: new Date(),
       endDate: new Date((new Date()).getTime() + (24 * 60 * 60 * 1000)),
       key: 'selection'
-    }]
+    }
   );
-  
+
+  useEffect(() => {
+    setSickLeaveStartDayjs(dayjs(dateRange.startDate));
+    setSickLeaveEndDayjs(dayjs(dateRange.endDate));
+  }, [dateRange, setDateRange, setSickLeaveStartDayjs, setSickLeaveEndDayjs]);
+
   return (
     <Box>
       <TextField
@@ -45,9 +46,9 @@ const FormOccupationalHealthCare = ({
       >
       </TextField>
       <FormControlLabel 
-        label="Sick Leave"               
+        label="Sick Leave"
         control={
-          <Checkbox 
+          <Checkbox
             checked={sickLeave}
             onChange={handleSickLeaveChange}
           />
@@ -58,10 +59,10 @@ const FormOccupationalHealthCare = ({
           <DateRange
             editableDateInputs={false}
             moveRangeOnFirstSelection={false}
-            ranges={dateRange}
-            onChange={(range) => {
-              console.log(range);
-              setDateRange([range.selection]);
+            ranges={[dateRange]}
+            onChange={(target) => {
+              console.log(target);
+              setDateRange(target.selection);
           }}/>
         </Box>
       }

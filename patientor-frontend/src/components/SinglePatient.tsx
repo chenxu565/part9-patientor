@@ -40,7 +40,7 @@ const SinglePatient = ({diagnoses}: Props) => {
   };
 
   const submitNewEntryToPatient = async (values: unknown) => {
-    console.log('submitNewPatient', values);
+    console.log('submitNewEntryToPatient', values);
     setModalOpen(false);
   };
 
