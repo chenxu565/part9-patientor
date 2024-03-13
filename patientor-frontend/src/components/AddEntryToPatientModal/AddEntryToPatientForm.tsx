@@ -10,6 +10,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { onSubmitInterface, onCancelInterface, DetailEntryToPatientType, DiagnosisEntry } from "../../types";
 import FormOccupationalHealthCare from "./FormOccupationalHealthCare";
+import FormHealthCheck from "./FormHealthCheck";
 
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -40,6 +41,7 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [sickLeaveStartDayjs, setSickLeaveStartDayjs] = useState<Dayjs|undefined>();
   const [sickLeaveEndDayjs, setSickLeaveEndDayjs] = useState<Dayjs|undefined>();
   const [sickLeaveFlag, setSickLeaveFlag] = useState(false);
+  const [rating, setRating] = useState(-1);
 
   const diagnosisOptions = diagnoses.map(diagnosis => ({
     value: diagnosis.code,
@@ -157,6 +159,12 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
               handleSickLeaveFlagChange={handleSickLeaveFlagChange}
               setSickLeaveStartDayjs={setSickLeaveStartDayjs}
               setSickLeaveEndDayjs={setSickLeaveEndDayjs}
+            />
+          }
+          {entryType === DetailEntryToPatientType.HealthCheck &&
+            <FormHealthCheck
+              rating={rating}
+              setRating={setRating}
             />
           }
           <Grid 
