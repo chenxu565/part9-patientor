@@ -28,7 +28,7 @@ interface EntryTypeOption{
 }
 
 const entryTypeOptions: EntryTypeOption[] = Object.values(DetailEntryToPatientType).map(v => ({
-  value: v, label: v.toString()
+  value: v, label: v.replace(/([A-Z])/g, ' $1').trim()
 }));
 
 const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
