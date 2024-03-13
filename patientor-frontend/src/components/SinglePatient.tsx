@@ -1,10 +1,12 @@
-import { PatientEntry, DiagnosisEntry } from '../types';
+import { z } from 'zod';
+import axios from 'axios';
+import { fromZodError } from 'zod-validation-error';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Male, Female, QuestionMark } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 import { Favorite } from '@mui/icons-material';
-
+import schema, { PatientEntry, DiagnosisEntry, DetailEntryNoIdToPatient } from '../types';
 import { getColorForRating } from '../utils';
 import patientService from '../services/patients';
 import EntryDetails from './EntryDetails';
@@ -41,7 +43,39 @@ const SinglePatient = ({diagnoses}: Props) => {
 
   const submitNewEntryToPatient = async (values: unknown) => {
     console.log('submitNewEntryToPatient', values);
-    setModalOpen(false);
+    let submitNewEntryToPatient : DetailEntryNoIdToPatient;
+    try {
+      submitNewEntryToPatient = schema.detailEntryNoIdToPatientSchema.parse(values);
+    } catch (e: unknown) {
+      if (e instanceof z.ZodError) {
+        console.error("Data validation error", e.errors);
+        setModalError(fromZodError(e).message);
+      } else {
+        console.error("Unknown form validation error", e);
+        setModalError("Unknown form validation error occurred");
+      }
+      return;
+    }
+    if (id) {
+      try {
+        const patient = await patientService.addEntryToPatient(submitNewEntryToPatient, id);
+        setOnePatient(patient);
+        setModalOpen(false);
+      } catch (e: unknown) {
+        if (axios.isAxiosError(e)) {
+          if (e?.response?.data && typeof e?.response?.data === "string") {
+            const message = e.response.data.replace('Something went wrong. Error: ', '');
+            console.error(message);
+            setModalError(message);
+          } else {
+            setModalError("Unrecognized axios error");
+          }
+        } else {
+          console.error("Unknown error", e);
+          setModalError("Unknown error");
+        }
+      }
+    }
   };
 
   useEffect(() => {
