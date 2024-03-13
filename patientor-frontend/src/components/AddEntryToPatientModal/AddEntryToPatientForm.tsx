@@ -65,11 +65,15 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
       date: dateDayjs.format("YYYY-MM-DD"),
       specialist,
       diagnosisCodes: diagnosisTags,
-      employerName,
-      ...(sickLeaveFlag? {sickLeave:  {
-        startDate: sickLeaveStartDayjs?.format("YYYY-MM-DD"),
-        endDate: sickLeaveEndDayjs?.format("YYYY-MM-DD")
-      }} : {})
+      ...(entryType === DetailEntryToPatientType.OccupationalHealthcare ? {
+        employerName,
+        ...(sickLeaveFlag ? {
+          sickLeave: {
+            startDate: sickLeaveStartDayjs?.format("YYYY-MM-DD"),
+            endDate: sickLeaveEndDayjs?.format("YYYY-MM-DD"),
+          }
+        } : {})
+      } : {}),
     };
     onSubmit(entry);
   };
