@@ -14,14 +14,14 @@ enum Color {
 }
 
 export const getColorForRating = (rating: number): Color => {
-  switch (rating) {
-    case 0:
+  switch (true) {
+    case rating < 1:
       return Color.Green;
-    case 1:
+    case rating < 2:
       return Color.Yellow;
-    case 2:
+    case rating < 3:
       return Color.Orange;
-    case 3:
+    case rating < 4:
       return Color.Red;
     default:
       return Color.Grey;
