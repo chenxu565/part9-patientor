@@ -1,17 +1,16 @@
 import { useState, SyntheticEvent } from "react";
 
 import {  TextField, MenuItem, Select, Grid, Button, SelectChangeEvent, Box, InputLabel } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from "@mui/material/Checkbox";
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, {Dayjs} from "dayjs";
-
-import { onSubmitInterface, onCancelInterface, DetailEntryToPatientType, DiagnosisEntry } from "../../types";
-
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { onSubmitInterface, onCancelInterface, DetailEntryToPatientType, DiagnosisEntry } from "../../types";
+import FormOccupationalHealthCare from "./FormOccupationalHealthCare";
+
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -143,41 +142,16 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
             onChange={(_event, value) => setDiagnosisTags(value.map(v => v.value))}
           />
           {entryType === DetailEntryToPatientType.OccupationalHealthcare &&
-            <Box>
-            <TextField
-              label="Employer Name"
-              fullWidth
-              value={employerName}
-              onChange={({ target }) => setEmployerName(target.value)}
-            >
-            </TextField>
-          <FormControlLabel 
-            label="Sick Leave"               
-            control={
-              <Checkbox 
-                checked={sickLeave}
-                onChange={handleSickLeaveChange}
-              />
-            }
-          />
-          {sickLeave &&
-            <Box>
-              <DatePicker 
-                label="Sick Leave Start Date" 
-                format="YYYY-MM-DD"
-                value={sickLeaveStartDayjs}
-                onChange={(target) => setSickLeaveStartDayjs(dayjs(target))}
-              />
-              <DatePicker 
-                label="Sick Leave End Date" 
-                format="YYYY-MM-DD"
-                value={sickLeaveEndDayjs}
-                onChange={(target) => setSickLeaveEndDayjs(dayjs(target))}
-              />
-            </Box>
-          }
-
-          </Box>
+            <FormOccupationalHealthCare
+              employerName={employerName}
+              setEmployerName={setEmployerName}
+              sickLeave={sickLeave}
+              handleSickLeaveChange={handleSickLeaveChange}
+              sickLeaveStartDayjs={sickLeaveStartDayjs}
+              setSickLeaveStartDayjs={setSickLeaveStartDayjs}
+              sickLeaveEndDayjs={sickLeaveEndDayjs}
+              setSickLeaveEndDayjs={setSickLeaveEndDayjs}
+            />
           }
           <Grid 
           >
