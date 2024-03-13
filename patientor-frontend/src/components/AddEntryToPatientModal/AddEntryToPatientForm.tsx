@@ -1,7 +1,7 @@
 import { useState, SyntheticEvent } from "react";
 
 import {  TextField, MenuItem, Select, Grid, Button, SelectChangeEvent, Box, InputLabel } from '@mui/material';
-// import Chip from '@mui/material/Chip';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from "@mui/material/Checkbox";
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
@@ -37,6 +37,10 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [dateDayjs, setDateDayjs] = useState<Dayjs>(dayjs(new Date()));
   const [entryType, setEntryType] = useState(DetailEntryToPatientType.HealthCheck);
   const [diagnosisTags, setDiagnosisTags] = useState<string[]>([]);
+  const [employerName, setEmployerName] = useState('');
+  const [sickLeaveStartDayjs, setSickLeaveStartDayjs] = useState<Dayjs|undefined>();
+  const [sickLeaveEndDayjs, setSickLeaveEndDayjs] = useState<Dayjs|undefined>();
+  const [sickLeave, setSickLeave] = useState(false);
 
   const diagnosisOptions = diagnoses.map(diagnosis => ({
     value: diagnosis.code,
@@ -65,6 +69,10 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
       specialist: specialist,
       diagnosisCodes: diagnosisTags,
     });
+  };
+
+  const handleSickLeaveChange = (_event: SelectChangeEvent<string>) => {
+    setSickLeave(!sickLeave);
   };
 
   return (
@@ -134,6 +142,43 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
             )}
             onChange={(_event, value) => setDiagnosisTags(value.map(v => v.value))}
           />
+          {entryType === DetailEntryToPatientType.OccupationalHealthcare &&
+            <Box>
+            <TextField
+              label="Employer Name"
+              fullWidth
+              value={employerName}
+              onChange={({ target }) => setEmployerName(target.value)}
+            >
+            </TextField>
+          <FormControlLabel 
+            label="Sick Leave"               
+            control={
+              <Checkbox 
+                checked={sickLeave}
+                onChange={handleSickLeaveChange}
+              />
+            }
+          />
+          {sickLeave &&
+            <Box>
+              <DatePicker 
+                label="Sick Leave Start Date" 
+                format="YYYY-MM-DD"
+                value={sickLeaveStartDayjs}
+                onChange={(target) => setSickLeaveStartDayjs(dayjs(target))}
+              />
+              <DatePicker 
+                label="Sick Leave End Date" 
+                format="YYYY-MM-DD"
+                value={sickLeaveEndDayjs}
+                onChange={(target) => setSickLeaveEndDayjs(dayjs(target))}
+              />
+            </Box>
+          }
+
+          </Box>
+          }
           <Grid 
           >
             <Grid item>
