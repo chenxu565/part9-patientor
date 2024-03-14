@@ -2,7 +2,7 @@ import { Rating } from '@mui/material';
 import { Favorite } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
-import { getColorForRating } from '../utils';
+import { getColorForRating, HEALTHBAR_TEXTS } from '../utils';
 
 type BarProps = {
   rating: number;
@@ -17,13 +17,6 @@ const StyledRating = styled(Rating)({
     color: "#ff3d47",
   }
 });
-
-const HEALTHBAR_TEXTS = [
-  "The patient is in great shape",
-  "The patient has a low risk of getting sick",
-  "The patient has a high risk of getting sick",
-  "The patient has a diagnosed condition",
-];
 
 const HealthRatingBar = ({ rating, showText }: BarProps) => {
   const color = getColorForRating(rating);
