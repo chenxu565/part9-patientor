@@ -1,7 +1,11 @@
 import patients from '../../data/patients-full';
 import { v1 as uuid } from 'uuid';
 
-import { PatientEntry, NonSensitivePatientEntry, PatientEntryNoID } from '../types';
+import { PatientEntry, 
+  NonSensitivePatientEntry, 
+  PatientEntryNoID, 
+  DetailEntryNoIdToPatient
+ } from '../types';
 
 const getEntries = (): PatientEntry[] => {
   return patients;
@@ -44,9 +48,23 @@ const findById = (id: string): PatientEntry | undefined => {
   }
 };
 
+const addEntryToPatient = (entry: DetailEntryNoIdToPatient, patientId: string): PatientEntry | undefined => {
+  const patientEntry = findById(patientId);
+  if (!patientEntry) {
+    return undefined;
+  }
+  const newEntryToPatient = {
+    id: uuid(),
+    ...entry
+  };
+  patientEntry.entries.push(newEntryToPatient);
+  return patientEntry;
+};
+
 export default {
   getEntries,
   getNonSensitiveEntries,
   addPatient,
-  findById
+  findById,
+  addEntryToPatient
 };

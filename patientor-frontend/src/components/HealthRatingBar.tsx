@@ -2,6 +2,7 @@ import { Rating } from '@mui/material';
 import { Favorite } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
+import { getColorForRating, HEALTHBAR_TEXTS } from '../utils';
 
 type BarProps = {
   rating: number;
@@ -17,21 +18,15 @@ const StyledRating = styled(Rating)({
   }
 });
 
-const HEALTHBAR_TEXTS = [
-  "The patient is in great shape",
-  "The patient has a low risk of getting sick",
-  "The patient has a high risk of getting sick",
-  "The patient has a diagnosed condition",
-];
-
 const HealthRatingBar = ({ rating, showText }: BarProps) => {
+  const color = getColorForRating(rating);
   return (
     <div className="health-bar">
       <StyledRating
         readOnly
         value={4 - rating}
         max={4}
-        icon={<Favorite fontSize="inherit" />}
+        icon={<Favorite fontSize="inherit" sx={{ color }} />}
       />
 
       {showText ? <p>{HEALTHBAR_TEXTS[rating]}</p> : null}
