@@ -1,21 +1,18 @@
 import React, { useState } from "react";
-import { Box, Rating } from "@mui/material";
+import { TextField } from "@mui/material";
 import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import Rating, { RatingProps } from "@mui/material/Rating";
+import { InputBaseComponentProps } from "@mui/material";
 import { HealthCheckRating } from "../../types";
-import { getColorForRating } from "../../utils";
+import { getColorForRating, HEALTHBAR_TEXTS } from "../../utils";
+
+type WrappedRatingProps = InputBaseComponentProps & RatingProps;
 
 interface Props  {
   rating: HealthCheckRating;
   setRating: React.Dispatch<React.SetStateAction<HealthCheckRating>>;
 }
-
-const HEALTHBAR_TEXTS = [
-  "The patient is in great shape",
-  "The patient has a low risk of getting sick",
-  "The patient has a high risk of getting sick",
-  "The patient has a diagnosed condition",
-];
 
 const FormHealthCheck = ({
   rating,
@@ -23,22 +20,47 @@ const FormHealthCheck = ({
 }: Props) => {
   const [hover, setHover] = useState<number>(-1); 
 
+  const WrappedRating = React.forwardRef<HTMLInputElement, WrappedRatingProps>(
+    (props, ref) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { className, ...rest } = props;
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', margin: 20 }}>
+          <Rating
+            max={4}
+            onChange={(_event, newRating) => {
+              setRating(newRating ?? 0);
+            }}
+            onChangeActive={(_event, newHover) => {
+              setHover(newHover);
+            }}
+            icon={<Favorite fontSize="inherit" sx={{ color: hover > -1 ? getColorForRating(4-hover) : getColorForRating(rating ? 4-rating : 4) }} />}
+            emptyIcon={<FavoriteBorderIcon fontSize="inherit" sx={{ color: 'grey' }} />}
+            value={Number(rating)}
+            ref={ref}
+            {...rest}
+          />
+          {rating ? <div style={{ marginLeft: '8px' }}>{HEALTHBAR_TEXTS[4-rating]}</div> : null}
+        </div>
+      );
+    }
+  );
+  
   return (
-    <Box>
-      <Rating
+      <TextField
         value={rating}
-        max={4}
-        onChange={(_event, newRating) => {
-          setRating(newRating ?? 0);
+        label="Rating"
+        onChange={(e) => {
+          // console.log(`Selected value ${e.target.value}, type: ${typeof e.target.value}`);
+          setRating(Number(e.target.value));
         }}
-        onChangeActive={(_event, newHover) => {
-          setHover(newHover);
+        InputLabelProps={{
+          shrink: true
         }}
-        icon={<Favorite fontSize="inherit" sx={{ color: hover > -1 ? getColorForRating(4-hover) : getColorForRating(4-rating) }} />}
-        emptyIcon={<FavoriteBorderIcon fontSize="inherit" sx={{ color: 'grey' }} />}
+        InputProps={{
+          inputComponent: WrappedRating
+        }}
       />
-        {rating ? <p>{HEALTHBAR_TEXTS[4-rating]}</p> : null}
-    </Box>
   );
 };
 
