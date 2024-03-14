@@ -11,6 +11,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { onSubmitInterface, onCancelInterface, DetailEntryToPatientType, DiagnosisEntry } from "../../types";
 import FormOccupationalHealthCare from "./FormOccupationalHealthCare";
 import FormHealthCheck from "./FormHealthCheck";
+import FormHospital from "./FormHospital";
 
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -42,6 +43,8 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [sickLeaveEndDayjs, setSickLeaveEndDayjs] = useState<Dayjs|undefined>();
   const [sickLeaveFlag, setSickLeaveFlag] = useState(false);
   const [rating, setRating] = useState(-1);
+  const [dischargeDateDayjs, setDischargeDateDayjs] = useState<Dayjs>(dayjs(new Date()));
+  const [dischargeCriteria, setDischargeCriteria] = useState('');
 
   const diagnosisOptions = diagnoses.map(diagnosis => ({
     value: diagnosis.code,
@@ -78,7 +81,13 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
       } : {}),
       ...(entryType === DetailEntryToPatientType.HealthCheck ? {
         healthCheckRating: rating
-      } : {})
+      } : {}),
+      ...(entryType === DetailEntryToPatientType.Hospital ? {
+        discharge: {
+          date: dischargeDateDayjs.format("YYYY-MM-DD"),
+          criteria: dischargeCriteria
+        }
+      } : {}),
     };
     onSubmit(entry);
   };
@@ -168,6 +177,14 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
             <FormHealthCheck
               rating={rating}
               setRating={setRating}
+            />
+          }
+          {entryType === DetailEntryToPatientType.Hospital &&
+            <FormHospital
+              dischargeDate={dischargeDateDayjs}
+              setDischargeDate={setDischargeDateDayjs}
+              dischargeCriteria={dischargeCriteria}
+              setDischargeCriteria={setDischargeCriteria}
             />
           }
           <Grid 
