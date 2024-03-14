@@ -76,6 +76,9 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
           }
         } : {})
       } : {}),
+      ...(entryType === DetailEntryToPatientType.HealthCheck ? {
+        healthCheckRating: rating
+      } : {})
     };
     onSubmit(entry);
   };
