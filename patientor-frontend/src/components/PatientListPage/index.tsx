@@ -4,7 +4,7 @@ import axios from 'axios';
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
-import schema, { PatientEntry, PatientFormValues } from "../../types";
+import schema, { PatientEntry, PatientFormValues, DetailEntryToPatient, DetailEntryToPatientType, HealthCheckEntry } from "../../types";
 import AddPatientModal from "../AddPatientModal";
 
 import HealthRatingBar from "../HealthRatingBar";
@@ -64,6 +64,14 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
     }
   };
 
+  const ratingOfPatientToday = (entries: DetailEntryToPatient[]=[]) => {
+    if (entries.length === 0) {
+      return 4;
+    }
+    const healthCheckEntries = entries.filter(entry => entry.type === DetailEntryToPatientType.HealthCheck) as HealthCheckEntry[];
+    return healthCheckEntries.sort((a, b) => a.date > b.date ? -1 : 1)[0].healthCheckRating??4;
+  };
+
   return (
     <div className="App">
       <Box>
@@ -91,7 +99,8 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
               <TableCell>
-                <HealthRatingBar showText={false} rating={1} />
+                <HealthRatingBar showText={false} rating={ratingOfPatientToday(patient.entries)} />
+                {/* <HealthRatingBar showText={false} rating={3} /> */}
               </TableCell>
             </TableRow>
           ))}
