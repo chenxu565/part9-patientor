@@ -80,7 +80,7 @@ const AddPatientForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
         } : {})
       } : {}),
       ...(entryType === DetailEntryToPatientType.HealthCheck ? {
-        healthCheckRating: rating
+        healthCheckRating: 4-rating
       } : {}),
       ...(entryType === DetailEntryToPatientType.Hospital ? {
         discharge: {

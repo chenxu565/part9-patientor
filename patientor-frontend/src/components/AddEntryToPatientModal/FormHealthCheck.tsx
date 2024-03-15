@@ -29,7 +29,7 @@ const FormHealthCheck = ({
           <Rating
             max={4}
             onChange={(_event, newRating) => {
-              setRating(newRating ?? 0);
+              setRating(newRating ? 4-newRating : 4);
             }}
             onChangeActive={(_event, newHover) => {
               setHover(newHover);
