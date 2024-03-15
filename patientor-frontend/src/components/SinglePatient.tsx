@@ -119,7 +119,7 @@ const SinglePatient = ({diagnoses}: Props) => {
         diagnoses={diagnoses}
       />      
       <Button variant="contained" onClick={() => openModal()} >Add new entry</Button>
-      <h3>entries</h3>
+      <h3>Entries</h3>
       {onePatient.entries.map((entry) => {
         return (
           <Box key={entry.id} sx={{ border: '2px solid grey', marginBottom: 2, paddingLeft: 1, borderRadius: 2}}>
