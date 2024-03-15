@@ -16,7 +16,7 @@ import PatientListPage from "./components/PatientListPage";
 import SinglePatient from "./components/SinglePatient";
 
 const App = () => {
-  const [patients, setPatients] = useState<PatientEntry[]>([]);
+  const [patientsNoSSN, setPatientsNoSSN] = useState<PatientEntry[]>([]);
   const [diagnoses, setDiagnoses] = useState<DiagnosisEntry[]>([]);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const App = () => {
 
     const fetchPatientList = async () => {
       const patients = await patientService.getAll();
-      setPatients(patients);
+      setPatientsNoSSN(patients);
     };
     void fetchPatientList();
 
@@ -48,7 +48,7 @@ const App = () => {
             </Button>
             <Divider hidden />
             <Routes>
-              <Route path="/" element={<PatientListPage patients={patients} setPatients={setPatients} />} />
+              <Route path="/" element={<PatientListPage patientsNoSSN={patientsNoSSN} setPatientsNoSSN={setPatientsNoSSN} />} />
               <Route path="patients/:id" element={<SinglePatient diagnoses={diagnoses}/>} />
             </Routes>
           </Container>

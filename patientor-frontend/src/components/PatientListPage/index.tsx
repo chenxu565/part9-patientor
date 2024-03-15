@@ -13,11 +13,11 @@ import patientService from "../../services/patients";
 import { Link } from "react-router-dom";
 
 interface Props {
-  patients : PatientEntry[]
-  setPatients: React.Dispatch<React.SetStateAction<PatientEntry[]>>
+  patientsNoSSN : PatientEntry[]
+  setPatientsNoSSN: React.Dispatch<React.SetStateAction<PatientEntry[]>>
 }
 
-const PatientListPage = ({ patients, setPatients } : Props ) => {
+const PatientListPage = ({ patientsNoSSN, setPatientsNoSSN } : Props ) => {
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
@@ -46,7 +46,7 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
 
     try {
       const patient = await patientService.create(newPatient);
-      setPatients(patients.concat(patient));
+      setPatientsNoSSN(patientsNoSSN.concat(patient));
       setModalOpen(false);
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
@@ -89,7 +89,7 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.values(patients).map((patient: PatientEntry) => (
+          {Object.values(patientsNoSSN).map((patient: PatientEntry) => (
             <TableRow key={patient.id}>
               <TableCell>
                 <Link to={`/patients/${patient.id}`}>
