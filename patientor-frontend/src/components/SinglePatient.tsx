@@ -24,9 +24,11 @@ const ColoredFavoriteIcon = ({rating} : PropsColoredFavoriteIcon) => {
 
 interface Props {
   diagnoses: DiagnosisEntry[];
+  patientsNoSSN : PatientEntry[]
+  setPatientsNoSSN: React.Dispatch<React.SetStateAction<PatientEntry[]>>
 }
 
-const SinglePatient = ({diagnoses}: Props) => {
+const SinglePatient = ({diagnoses, patientsNoSSN, setPatientsNoSSN}: Props) => {
   const [onePatient, setOnePatient] = useState<undefined | PatientEntry>(undefined);
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
@@ -60,6 +62,12 @@ const SinglePatient = ({diagnoses}: Props) => {
       try {
         const patient = await patientService.addEntryToPatient(submitNewEntryToPatient, id);
         setOnePatient(patient);
+        const index = patientsNoSSN.findIndex((patient) => patient.id === id);
+        if (index !== -1) {
+          const newPatientsNoSSN = [...patientsNoSSN];
+          newPatientsNoSSN[index] = patient;
+          setPatientsNoSSN(newPatientsNoSSN);
+        }
         setModalOpen(false);
       } catch (e: unknown) {
         if (axios.isAxiosError(e)) {
