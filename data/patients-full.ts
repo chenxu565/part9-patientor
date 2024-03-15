@@ -23,6 +23,15 @@ const data = [
           "criteria": 'Thumb has healed.',
         },
       },
+      {
+        "id": '37be178f-a432-4ba4-aac2-f86810e36a15',
+        "date": '2018-10-05',
+        "specialist": 'MD House',
+        "type": "HealthCheck",
+        "description":
+          'Yearly control visit. Diabetes risk elevated.',
+        "healthCheckRating": 2,
+      },
     ],
   },
   {
@@ -47,6 +56,15 @@ const data = [
           "endDate": '2019-08-28',
         },
       },
+      {
+        "id": '37be178f-a432-4ba4-aac2-f86810e36a15',
+        "date": '2018-10-05',
+        "specialist": 'MD House',
+        "type": "HealthCheck",
+        "description":
+          'Yearly control visit. Diagnosed with very high cholesterol.',
+        "healthCheckRating": 3,
+      },
     ],
   },
   {
@@ -56,7 +74,9 @@ const data = [
     "ssn": '250470-555L',
     "gender": "other",
     "occupation": 'Technician',
-    "entries": [],
+    "entries": [
+      
+    ],
   },
   {
     "id": 'd2773822-f723-11e9-8f0b-362b9e155667',
