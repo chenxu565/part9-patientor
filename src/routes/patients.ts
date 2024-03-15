@@ -7,7 +7,7 @@ import schema from '../types';
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-  return res.send(patientService.getNonSensitiveEntries());
+  return res.send(patientService.getEntriesNoSSN());
 });
 
 router.post('/', (req, res) => {

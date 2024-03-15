@@ -21,6 +21,17 @@ const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
   }));
 };
 
+const getEntriesNoSSN = (): Omit<PatientEntry, 'ssn'>[] => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation, entries}) => ({
+    id,
+    name,
+    dateOfBirth,
+    gender,
+    occupation,
+    entries
+  }));
+};
+
 const addPatient = ( entry: PatientEntryNoID ): PatientEntry => {
   
   const newPatientEntry: PatientEntry = {
@@ -66,5 +77,6 @@ export default {
   getNonSensitiveEntries,
   addPatient,
   findById,
-  addEntryToPatient
+  addEntryToPatient,
+  getEntriesNoSSN
 };
